@@ -1,0 +1,15 @@
+torch==2.9.1
+torchvision==0.24.1
+transformers==4.56.1
+pillow
+numpy
+opencv-python
+requests
+tqdm
+pyyaml
+matplotlib
+scikit-learn
+accelerate
+pandas
+loguru
+einops
