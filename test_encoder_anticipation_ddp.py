@@ -18,7 +18,6 @@ from models import build_model, remap_videomae_qkv_bias_keys
 from engine.collate import anticipation_eval_collate_fn_pad
 
 from evaluation.eval_utils import print_validation_metrics
-from evaluation.run_mmau import evaluate_predictions
 
 def fuse_scores(score, risk_score, lam=0.15, k=8.0, b=0.10):
     risk_prob = 1.0 / (1.0 + np.exp(-k * (risk_score - b)))
@@ -125,6 +124,13 @@ def load_checkpoint_model(checkpoint_path, device, verbose=True):
         weights_only=False,
     )
     train_args = ckpt["args"]
+
+    print(train_args)
+
+    if num_classes := getattr(train_args, "num_classes", None) is None:
+        if verbose:
+            print("num_classes not found in checkpoint args, defaulting to 1.")
+        train_args['num_classes'] = 1
 
     if verbose:
         print(train_args)
@@ -548,6 +554,15 @@ def main():
 
             with open(eval_anno_json, "r") as f:
                 anno_dict = json.load(f)
+
+            if args.subset == "Nexar":
+                from evaluation.run_nexar import evaluate_predictions
+            elif args.subset in ["CAP", "DADA"]:
+                from evaluation.run_mmau import evaluate_predictions
+            elif args.subset == "DAD":
+                from evaluation.run_dad import evaluate_predictions
+            else:
+                raise ValueError(f"Unsupported subset: {args.subset}")
 
             test_metrics, _ = evaluate_predictions(
                 clip_outputs=clip_outputs,

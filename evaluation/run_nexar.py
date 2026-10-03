@@ -451,7 +451,7 @@ def main():
     scoring_key = "score" # or risk_score, score
     snippet_len = 5
 
-    res_folder = f"./results_{subset}"
+    res_folder = f"./results_{subset.capitalize()}"
     anno_file = f"./annotations/{subset}_anno.json"
 
     results_folders = sorted(os.listdir(res_folder))
