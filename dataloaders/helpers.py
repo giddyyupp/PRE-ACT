@@ -3,6 +3,25 @@ from collections import defaultdict
 from typing import Callable, Dict, List, Optional, Sequence
 
 
+def get_fps_mmau(video_id, dataset_type="CAP"):
+    assert dataset_type in ["CAP", "DADA"]  # 仅支持 'CAP' 和 'DADA' 数据集
+    if dataset_type == "CAP":
+        if "000001" <= video_id <= "006381":
+            return 10
+        elif "006382" <= video_id <= "007887":
+            return 30
+        elif "007888" <= video_id <= "009046":
+            return 20
+        elif "009047" <= video_id <= "011770":
+            return 30
+        elif "013001" <= video_id <= "014490":
+            return 10
+        else:
+            return None
+    else:  # dataset_type == 'DADA'
+        return 30
+
+
 def _stable_score(video_id: str, seed: int) -> int:
     """
     Stable pseudo-random score.

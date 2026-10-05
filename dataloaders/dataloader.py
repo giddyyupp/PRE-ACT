@@ -11,7 +11,7 @@ from torch.utils.data import Dataset
 
 from dataloaders.splits import cap_test, dada_test
 from engine.risk_targets import get_risk_target_fn, full_video_progress_risk_fn
-from dataloaders.helpers import deterministic_record_subsets, print_subset_stats
+from dataloaders.helpers import deterministic_record_subsets, print_subset_stats, get_fps_mmau
 
 
 class QwenTrainWrapper(Dataset):
@@ -207,23 +207,7 @@ class MMAUAnticipationDataset(Dataset):
         video_folder = f"{int(parts[1]):03d}"
         return category_id, video_folder
 
-    def _get_fps(self, video_id, dataset_type="CAP"):
-        assert dataset_type in ["CAP", "DADA"]  # 仅支持 'CAP' 和 'DADA' 数据集
-        if dataset_type == "CAP":
-            if "000001" <= video_id <= "006381":
-                return 10
-            elif "006382" <= video_id <= "007887":
-                return 30
-            elif "007888" <= video_id <= "009046":
-                return 20
-            elif "009047" <= video_id <= "011770":
-                return 30
-            elif "013001" <= video_id <= "014490":
-                return 10
-            else:
-                return None
-        else:  # dataset_type == 'DADA'
-            return 30
+
 
     def _map_orig_to_stored_frame_idx(
         self,
@@ -297,7 +281,7 @@ class MMAUAnticipationDataset(Dataset):
             image_dir = self._resolve_video_dir(rec)
             frames = self._list_frames(image_dir)
 
-            current_fps = self._get_fps(video_folder, dataset_type=self.cfg.subset.upper())
+            current_fps = get_fps_mmau(video_folder, dataset_type=self.cfg.subset.upper())
 
             if current_fps != 10: # just to debug. has no effect.
                 pass
@@ -488,7 +472,7 @@ class MMAUAnticipationDataset(Dataset):
 
             image_dir = self._resolve_video_dir(rec)
             frames = self._list_frames(image_dir)
-            current_fps = self._get_fps(video_folder, dataset_type=self.cfg.subset.upper())
+            current_fps = get_fps_mmau(video_folder, dataset_type=self.cfg.subset.upper())
 
             horizon_frames = int(round(self.cfg.anticipation_horizon_sec * current_fps))
             t_co = int(rec["t_co"])
@@ -980,7 +964,7 @@ class MMAUAnticipationDataset(Dataset):
             else:
                 video_folder = str(rec["video_name"])
 
-            video_fps = self._get_fps(video_folder, dataset_type=self.cfg.subset.upper())
+            video_fps = get_fps_mmau(video_folder, dataset_type=self.cfg.subset.upper())
             horizon_frames = int(round(self.cfg.anticipation_horizon_sec * video_fps))
 
             sample_stride = max(1, int(round(video_fps / self.cfg.base_fps)))
@@ -1073,7 +1057,7 @@ class MMAUAnticipationDataset(Dataset):
             else:
                 video_folder = str(rec["video_name"])
 
-            video_fps = self._get_fps(video_folder, dataset_type=self.cfg.subset.upper())
+            video_fps = get_fps_mmau(video_folder, dataset_type=self.cfg.subset.upper())
             horizon_frames = int(round(self.cfg.anticipation_horizon_sec * video_fps))
 
             # 10-FPS-equivalent endpoint stride
@@ -1171,7 +1155,7 @@ class MMAUAnticipationDataset(Dataset):
             else:
                 video_folder = str(rec["video_name"])
 
-            video_fps = self._get_fps(video_folder, dataset_type=self.cfg.subset.upper())
+            video_fps = get_fps_mmau(video_folder, dataset_type=self.cfg.subset.upper())
             horizon_frames = int(round(self.cfg.anticipation_horizon_sec * video_fps))
 
             sample_stride = max(1, int(round(video_fps / self.cfg.base_fps)))
@@ -1265,7 +1249,7 @@ class MMAUAnticipationDataset(Dataset):
             else:
                 video_folder = str(rec["video_name"])
             
-            video_fps = self._get_fps(video_folder, dataset_type=self.cfg.subset.upper())
+            video_fps = get_fps_mmau(video_folder, dataset_type=self.cfg.subset.upper())
 
             sample_stride = max(1, int(round(video_fps / self.cfg.base_fps)))
 
@@ -1374,7 +1358,7 @@ class MMAUAnticipationDataset(Dataset):
             else:
                 video_folder = str(rec["video_name"])
 
-            video_fps = self._get_fps(video_folder, dataset_type=self.cfg.subset.upper())
+            video_fps = get_fps_mmau(video_folder, dataset_type=self.cfg.subset.upper())
             fps_vals.append(video_fps)
 
             if video_fps != 10:

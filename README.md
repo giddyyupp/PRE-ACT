@@ -11,8 +11,14 @@
 </p>
 
 <!-- Optional teaser / method figure -->
-<p align="center">
+<!-- <p align="center">
   <img src="docs/teaser.png" width="95%" alt="PRE-ACT overview">
+</p> -->
+
+<p align="center">
+  <img src="docs/preact.gif"
+       width="800"
+       alt="PRE-ACT accident anticipation and predicted risk over time">
 </p>
 
 ## Abstract
