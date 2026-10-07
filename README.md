@@ -297,7 +297,7 @@ If you find this work useful, please cite:
 ```bibtex
 @article{preact2026hicsonmez,
   title   = {Progressive Risk Estimation for Accident Anticipation},
-  author  = {Samet Hicsonmez, Eray Çakar, Nermin Samet, Fatma Güney},
+  author = {Samet Hicsonmez and Eray {\c{C}}akar and Nermin Samet and Fatma G{\"u}ney},
   journal = {NeurIPS},
   year    = {2026}
 }
